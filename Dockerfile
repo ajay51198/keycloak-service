@@ -35,4 +35,4 @@ ENV KC_CACHE=local
 
 # Port binding - Uses Render's dynamically assigned port
 EXPOSE 8080
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--http-port=8080", "--http-host=0.0.0.0"]
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start","--hostname=${KC_HOSTNAME}", "--http-port=8080", "--http-host=0.0.0.0"]
