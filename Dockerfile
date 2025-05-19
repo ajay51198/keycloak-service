@@ -9,8 +9,8 @@ ENV KC_DB=postgres
 ENV KC_DB_URL=jdbc:postgresql://dpg-d0l2ii9r0fns7392k780-a/keycloak_db_oga2
 ENV KC_DB_USERNAME=tbt_dev_user
 ENV KC_DB_PASSWORD=o96Wz4Yh88uoMVLbFCiV8zLMkmwEQJQs
-ENV KC_HTTP_PORT=8080
-ENV PORT=8080
+ENV KC_HTTP_PORT=8443
+ENV KC_HTTPS_PORT=8444
 # Configure Keycloak hostname
 ENV KC_HOSTNAME=https://keycloak-service-do14.onrender.com
 
@@ -34,5 +34,6 @@ COPY --from=builder /opt/keycloak/ /opt/keycloak/
 ENV KC_CACHE=local
 
 # Port binding - Uses Render's dynamically assigned port
-EXPOSE 8080
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start","--hostname=https://keycloak-service-do14.onrender.com", "--http-port=8080", "--http-host=0.0.0.0", "--optimized"]
+EXPOSE 8443
+EXPOSE 8444
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start","--hostname=https://keycloak-service-do14.onrender.com", "--http-port=8443", "--http-host=0.0.0.0", "--optimized"]
