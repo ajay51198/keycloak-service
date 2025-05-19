@@ -7,8 +7,6 @@ ENV KC_METRICS_ENABLED=true
 # Configure database vendor
 ENV KC_DB=postgres
 ENV KC_DB_URL=jdbc:postgresql://dpg-d0l2ii9r0fns7392k780-a/keycloak_db_oga2
-ENV KC_DB_USERNAME=tbt_dev_user
-ENV KC_DB_PASSWORD=o96Wz4Yh88uoMVLbFCiV8zLMkmwEQJQs
 ENV KC_HTTP_PORT=8443
 ENV KC_HTTPS_PORT=8444
 # Configure Keycloak hostname
