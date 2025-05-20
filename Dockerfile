@@ -1,3 +1,4 @@
+FROM quay.io/keycloak/keycloak:latest as builder
 # Necessary to let us use PostgreSQL
 ENV OPERATOR_KEYCLOAK_IMAGE=quay.io/keycloak/keycloak:latest
 # Set Render's assigned HTTP port (8443)
