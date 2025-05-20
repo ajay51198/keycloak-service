@@ -1,9 +1,5 @@
 # Necessary to let us use PostgreSQL
 ENV OPERATOR_KEYCLOAK_IMAGE=quay.io/keycloak/keycloak:latest
-
-
-
-
 # Set Render's assigned HTTP port (8443)
 ENV KC_HTTP_RELATIVE_PATH=/auth
 ENV PROXY_ADDRESS_FORWARDING=true
@@ -24,7 +20,6 @@ ENV KEYCLOAK_ADMIN=$ADMIN
 ENV KEYCLOAK_ADMIN_PASSWORD=$ADMIN_PASSWORD
 ENV KB_DB=postgres
 ENV KC_DB_URL=jdbc:postgresql://${DB_URL}:${DB_PORT}/${DB_DATABASE}
-
 # Database may seem redundant but it is not
 RUN /opt/keycloak/bin/kc.sh build --db=postgres
 
@@ -34,10 +29,6 @@ COPY --from=builder /opt/keycloak/ /opt/keycloak/
 
 # Necessary to let us use PostgreSQL
 ENV OPERATOR_KEYCLOAK_IMAGE=quay.io/keycloak/keycloak:latest
-
-
-
-
 
 # Set port 8443 to PORT environment variable in Render
 ENV KC_HTTP_RELATIVE_PATH=/auth
