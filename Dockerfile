@@ -1,53 +1,74 @@
-FROM quay.io/keycloak/keycloak:latest AS builder
+# Necessary to let us use PostgreSQL
+ENV OPERATOR_KEYCLOAK_IMAGE=quay.io/keycloak/keycloak:latest
 
-# Enable health and metrics support
-ENV KC_HEALTH_ENABLED=true
-ENV KC_METRICS_ENABLED=true
-
-# Configure database vendor
-ENV KC_DB=postgres
-ENV KC_DB_URL=jdbc:postgresql://dpg-d0l2ii9r0fns7392k780-a/keycloak_db_oga2
-ENV KC_HTTP_PORT=8443
-ENV KC_HTTPS_PORT=8444
-# Configure Keycloak hostname
+# Set these env variables
+ARG ADMIN=admin
+ARG ADMIN_PASSWORD=o96Wz4Yh88uoMVLbFCiV8zLMkmwEQJQs
 
 
+# Set Render's assigned HTTP port (8443)
 ENV KC_HTTP_RELATIVE_PATH=/auth
 ENV PROXY_ADDRESS_FORWARDING=true
+ENV KC_DB_USERNAME=$DB_USERNAME
+ENV KC_DB_PASSWORD=$DB_PASSWORD
 ENV KC_DB_URL_PROPERTIES='?'
 ENV KC_HOSTNAME_STRICT=false
-ENV KC_HOSTNAME=https://keycloak-service-do14.onrender.com
-ENV KC_HOSTNAME_ADMIN=https://keycloak-service-do14.onrender.com
+ENV KC_HOSTNAME=keycloak-service-do14.onrender.com
+ENV KC_HOSTNAME_ADMIN=keycloak-service-do14.onrender.com
 ENV KC_HTTP_ENABLED=true
+ENV KC_HTTP_PORT=8443
+ENV KC_HTTPS_PORT=8444
 ENV KC_LOG_LEVEL=INFO
 ENV KC_HOSTNAME_STRICT_HTTPS=false
 ENV KC_PROXY=passthrough
 ENV KC_PROXY_HEADERS=xforwarded
+ENV KEYCLOAK_ADMIN=$ADMIN
+ENV KEYCLOAK_ADMIN_PASSWORD=$ADMIN_PASSWORD
+ENV KB_DB=postgres
+ENV KC_DB_URL=jdbc:postgresql://${DB_URL}:${DB_PORT}/${DB_DATABASE}
 
-
-# Admin user setup
-ENV KEYCLOAK_ADMIN=admin
-ENV KEYCLOAK_ADMIN_PASSWORD=admin
-
-WORKDIR /opt/keycloak
-
-# Generate Keycloak self-signed certificate (for demonstration purposes only)
-RUN keytool -genkeypair -storepass password -storetype PKCS12 -keyalg RSA -keysize 2048 \
-    -dname "CN=server" -alias server -ext "SAN:c=DNS:localhost,IP:127.0.0.1" \
-    -keystore conf/server.keystore
-
-RUN /opt/keycloak/bin/kc.sh build
+# Database may seem redundant but it is not
+RUN /opt/keycloak/bin/kc.sh build --db=postgres
 
 FROM quay.io/keycloak/keycloak:latest
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
+COPY --from=builder /opt/keycloak/ /opt/keycloak/
 
-# Cache configuration
-ENV KC_CACHE=local
+# Necessary to let us use PostgreSQL
+ENV OPERATOR_KEYCLOAK_IMAGE=quay.io/keycloak/keycloak:latest
 
-# Port binding - Uses Render's dynamically assigned port
+# Set these env variables again
+ARG ADMIN=admin
+ARG ADMIN_PASSWORD=o96Wz4Yh88uoMVLbFCiV8zLMkmwEQJQs
+
+
+
+# Set port 8443 to PORT environment variable in Render
+ENV KC_HTTP_RELATIVE_PATH=/auth
+ENV PROXY_ADDRESS_FORWARDING=true
+ENV KC_DB_USERNAME=$DB_USERNAME
+ENV KC_DB_PASSWORD=$DB_PASSWORD
+ENV KC_DB_URL_PROPERTIES='?'
+ENV KC_HOSTNAME_STRICT=false
+ENV KC_HOSTNAME=keycloak-service-do14.onrender.com
+ENV KC_HOSTNAME_ADMIN=keycloak-service-do14.onrender.com
+ENV KC_HTTP_ENABLED=true
+ENV KC_HTTP_PORT=8443
+ENV KC_HTTPS_PORT=8444
+ENV KC_LOG_LEVEL=INFO
+ENV KC_HOSTNAME_STRICT_HTTPS=false
+ENV KC_PROXY=passthrough
+ENV KC_PROXY_HEADERS=xforwarded
+ENV KEYCLOAK_ADMIN=$ADMIN
+ENV KEYCLOAK_ADMIN_PASSWORD=$ADMIN_PASSWORD
+ENV KB_DB=postgres
+ENV KC_DB_URL=jdbc:postgresql://${DB_URL}:${DB_PORT}/${DB_DATABASE}
+
 EXPOSE 8443
 EXPOSE 8444
+
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
-# even though we build, using --optimized disallows postgresql databases so we need this workaround https://github.com/keycloak/keycloak/issues/15898
-# in other words don't add optimzied here
+# Even though we build, using --optimized disallows PostgreSQL databases,
+# so we need this workaround https://github.com/keycloak/keycloak/issues/15898
+# In other words, don't add --optimized here
 CMD ["start", "--db=postgres"]
