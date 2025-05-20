@@ -1,9 +1,7 @@
 # Necessary to let us use PostgreSQL
 ENV OPERATOR_KEYCLOAK_IMAGE=quay.io/keycloak/keycloak:latest
 
-# Set these env variables
-ARG ADMIN=admin
-ARG ADMIN_PASSWORD=o96Wz4Yh88uoMVLbFCiV8zLMkmwEQJQs
+
 
 
 # Set Render's assigned HTTP port (8443)
@@ -37,9 +35,7 @@ COPY --from=builder /opt/keycloak/ /opt/keycloak/
 # Necessary to let us use PostgreSQL
 ENV OPERATOR_KEYCLOAK_IMAGE=quay.io/keycloak/keycloak:latest
 
-# Set these env variables again
-ARG ADMIN=admin
-ARG ADMIN_PASSWORD=o96Wz4Yh88uoMVLbFCiV8zLMkmwEQJQs
+
 
 
 
