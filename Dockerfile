@@ -10,7 +10,20 @@ ENV KC_DB_URL=jdbc:postgresql://dpg-d0l2ii9r0fns7392k780-a/keycloak_db_oga2
 ENV KC_HTTP_PORT=8443
 ENV KC_HTTPS_PORT=8444
 # Configure Keycloak hostname
+
+
+ENV KC_HTTP_RELATIVE_PATH=/auth
+ENV PROXY_ADDRESS_FORWARDING=true
+ENV KC_DB_URL_PROPERTIES='?'
+ENV KC_HOSTNAME_STRICT=false
 ENV KC_HOSTNAME=https://keycloak-service-do14.onrender.com
+ENV KC_HOSTNAME_ADMIN=https://keycloak-service-do14.onrender.com
+ENV KC_HTTP_ENABLED=true
+ENV KC_LOG_LEVEL=INFO
+ENV KC_HOSTNAME_STRICT_HTTPS=false
+ENV KC_PROXY=passthrough
+ENV KC_PROXY_HEADERS=xforwarded
+
 
 # Admin user setup
 ENV KEYCLOAK_ADMIN=admin
@@ -34,4 +47,7 @@ ENV KC_CACHE=local
 # Port binding - Uses Render's dynamically assigned port
 EXPOSE 8443
 EXPOSE 8444
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start","--hostname=https://keycloak-service-do14.onrender.com", "--http-port=8443", "--http-host=0.0.0.0", "--optimized"]
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
+# even though we build, using --optimized disallows postgresql databases so we need this workaround https://github.com/keycloak/keycloak/issues/15898
+# in other words don't add optimzied here
+CMD ["start", "--db=postgres"]
