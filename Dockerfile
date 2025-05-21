@@ -3,7 +3,7 @@ FROM quay.io/keycloak/keycloak:latest as builder
 ENV OPERATOR_KEYCLOAK_IMAGE=quay.io/keycloak/keycloak:latest
 # Set Render's assigned HTTP port (8443)
 ENV KC_HTTP_RELATIVE_PATH=/auth
-ENV KC_STATIC_RESOURCES_PATH=/auth/resources
+ENV KEYCLOAK_FRONTEND_URL=https://keycloak-service-do14.onrender.com/auth/
 ENV PROXY_ADDRESS_FORWARDING=true
 ENV KC_DB_USERNAME=$DB_USERNAME
 ENV KC_DB_PASSWORD=$DB_PASSWORD
